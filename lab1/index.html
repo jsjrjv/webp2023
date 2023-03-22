@@ -1,0 +1,23 @@
+var container=document.getElementById('container');
+var firstChar = container.textContent.charAt(0); 
+var randChars = getRandomChars(); 
+window.onload = function() {
+  container.textContent = randChars + container.textContent.substring(randChars.length);
+}
+window.addEventListener("keyup",function(e){
+  console.log(e.key);
+  if(e.key=='Escape'){
+    container.textContent="";
+  }
+  else if(e.key=='Backspace'){
+    var str =container.textContent;
+    container.textContent=str.substring(0,str.length-1);
+  }
+  else {
+    firstChar = container.textContent.charAt(0); // 更新第一個字元
+    if (e.key == charAt(0) { 
+     container.textContent = container.textContent.substring(1);
+      container.textContent += getRandomChars(); 
+    }
+  }
+});
