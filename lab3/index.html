@@ -1,0 +1,19 @@
+var dataUrl = 'https://api.unsplash.com/photos?
+client_id=812193ef71ca946e361ed541979a0cfd91e9419a1
+9235fd05f51ea14233f020a&per_page=30'
+
+function getimg(){}
+
+function add_new_img(dataset){}
+
+
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://api.unsplash.com/photos/random');
+xhr.setRequestHeader('Authorization', 'Client-ID <YOUR_ACCESS_KEY>');
+xhr.onload = function() {
+  if (xhr.status === 200) {
+    var responseData = JSON.parse(xhr.responseText);
+    console.log(responseData);
+  }
+};
+xhr.send();
