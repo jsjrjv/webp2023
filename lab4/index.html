@@ -1,1 +1,148 @@
-fetch
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            border: 1px solid #ddd;
+            padding: 6px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+
+    <script>
+        var openUrl = "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6";
+
+        fetch(openUrl)
+            .then(response => response.json())
+            .then(data => {
+                dataset = data;
+                addNewData();
+            });
+
+        var currentPage = 0;
+        var pageSize = 10;
+        var dataset = [];
+
+        function addNewData(data) {
+            var myTable = document.getElementById("csie");
+            var newData = data ? data : getNewData();
+            newData.forEach(function (data, index) {
+                var row = myTable.insertRow(-1);
+                row.insertCell(0).innerHTML = data['title'];
+                row.insertCell(1).innerHTML = data['showInfo'][0]['location'];
+                row.insertCell(2).innerHTML = data['showInfo'][0]['price'];
+            });
+            showPageControls();
+        }
+
+        function getNewData() {
+            var start = currentPage * pageSize;
+            var end = start + pageSize;
+            var newData = dataset.filter(function (data) {
+                return data.title.includes(document.getElementById("searchInput").value);
+            }).slice(start, end);
+            return newData;
+        }
+
+        function showPageControls() {
+            var totalPages = Math.ceil(dataset.filter(function (data) {
+                return data.title.includes(document.getElementById("searchInput").value);
+            }).length / pageSize);
+            var prevBtn = document.getElementById("prevBtn");
+            var nextBtn = document.getElementById("nextBtn");
+            prevBtn.disabled = currentPage == 0;
+            nextBtn.disabled = currentPage == totalPages - 1;
+            var pageInfo = document.getElementById("pageInfo");
+            pageInfo.innerHTML = "第 " + (currentPage + 1) + " 頁，共 " + totalPages + " 頁";
+        }
+
+        function prevPage() {
+            currentPage--;
+            clearTable();
+            addNewData();
+        }
+
+        function nextPage() {
+            currentPage++;
+            clearTable();
+            addNewData();
+        }
+
+        function clearTable() {
+            var myTable = document.getElementById("csie");
+            while (myTable.rows.length > 1) {
+                myTable.deleteRow(1);
+            }
+        }
+
+        function searchData() {
+            currentPage = 0;
+            clearTable();
+            showPageControls();
+            var searchValue = document.getElementById("searchInput").value;
+            var filteredData = dataset.filter(function (data) {
+                return data.title.includes(searchValue);
+            });
+            addNewData(filteredData);
+        }
+    </script>
+
+
+</head>
+
+<body>
+    <h1>景點觀光展覽資訊</h1>
+    <p id="pageInfo"></p>
+    <form>
+        <label for="searchInput">Search:</label>
+        <input type="text" id="searchInput" name="searchInput">
+        <button type="button" onclick="searchData()">Search</button>
+    </form>
+
+    <table id="csie" class="table table-striped table-hover">
+
+        <thead>
+            <tr>
+                <th>名稱</th>
+                <th>地點</th>
+                <th>票價</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <button id="prevBtn" onclick="prevPage()">上一頁</button>
+    <button id="nextBtn" onclick="nextPage()">下一頁</button>
+
+</body>
+
+
+</html>
